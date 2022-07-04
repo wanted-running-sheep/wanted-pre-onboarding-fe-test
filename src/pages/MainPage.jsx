@@ -13,9 +13,16 @@ export default function MainPage({ setEmail }) {
   }, []);
 
   return (
-    <div style={{ width: '100vw', height: '100vh', background: '#FAFAFA', overflow: 'auto' }}>
-      <GnbContainer setEmail={setEmail}/>
-      <FeedContainer feeds={feeds}/> 
+    <div
+      style={{
+        width: '100vw',
+        height: '100vh',
+        background: '#FAFAFA',
+        overflow: 'auto',
+      }}
+    >
+      <GnbContainer setEmail={setEmail} />
+      <FeedContainer feeds={feeds} />
     </div>
-  )
+  );
 }

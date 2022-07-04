@@ -8,7 +8,7 @@ import LogoutButton from '../components/gnb/LogoutButton';
 
 import { AiFillHome, AiOutlineHeart, AiOutlineSend } from 'react-icons/ai';
 
-import { removeItem  } from '../services/storage';
+import { loadItem, removeItem } from '../services/storage';
 
 const Wrapper = styled.div({
   zIndex: '100',
@@ -22,7 +22,7 @@ const Wrapper = styled.div({
   boxShadow: 'rgba(99, 99, 99, 0.1) 0px 2px 8px 0px',
   '@media (max-width: 480px)': {
     justifyContent: 'space-between',
-  }
+  },
 });
 
 const RightSide = styled.div({
@@ -33,22 +33,24 @@ const RightSide = styled.div({
 
 export default function GnbContainer({ setEmail }) {
   const handleClickLogout = () => {
-    setEmail(null);
     removeItem('email');
     removeItem('password');
-  }
+    const email = loadItem('email');
+    if (!email) {
+      window.location.reload();
+    }
+  };
 
   return (
     <Wrapper>
-      <Logo size='100px'/>
+      <Logo size="100px" />
       <SearchField />
       <RightSide>
-        <AiFillHome fontSize='25px'/>
-        <AiOutlineHeart fontSize='25px'/>
-        <AiOutlineSend fontSize='25px'/>
-        <LogoutButton
-          onClickLogout={handleClickLogout}/>
+        <AiFillHome fontSize="25px" />
+        <AiOutlineHeart fontSize="25px" />
+        <AiOutlineSend fontSize="25px" />
+        <LogoutButton onClickLogout={handleClickLogout} />
       </RightSide>
     </Wrapper>
-  )
+  );
 }
