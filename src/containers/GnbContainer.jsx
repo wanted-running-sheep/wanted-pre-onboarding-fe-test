@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import styled from '@emotion/styled';
@@ -6,9 +7,11 @@ import Logo from '../components/common/Logo';
 import SearchField from '../components/gnb/SearchField';
 import LogoutButton from '../components/gnb/LogoutButton';
 
+import LoginCheckContext from '../context/LoginCheckContext';
+
 import { AiFillHome, AiOutlineHeart, AiOutlineSend } from 'react-icons/ai';
 
-import { removeItem  } from '../services/storage';
+import { removeLocalStorage } from '../services/storage';
 
 const Wrapper = styled.div({
   zIndex: '100',
@@ -22,7 +25,7 @@ const Wrapper = styled.div({
   boxShadow: 'rgba(99, 99, 99, 0.1) 0px 2px 8px 0px',
   '@media (max-width: 480px)': {
     justifyContent: 'space-between',
-  }
+  },
 });
 
 const RightSide = styled.div({
@@ -31,24 +34,24 @@ const RightSide = styled.div({
   alignItems: 'center',
 });
 
-export default function GnbContainer({ setEmail }) {
+export default function GnbContainer() {
+  const { setIsSigned } = useContext(LoginCheckContext);
+
   const handleClickLogout = () => {
-    setEmail(null);
-    removeItem('email');
-    removeItem('password');
-  }
+    removeLocalStorage('isSigned');
+    setIsSigned(false);
+  };
 
   return (
     <Wrapper>
-      <Logo size='100px'/>
+      <Logo size="100px" />
       <SearchField />
       <RightSide>
-        <AiFillHome fontSize='25px'/>
-        <AiOutlineHeart fontSize='25px'/>
-        <AiOutlineSend fontSize='25px'/>
-        <LogoutButton
-          onClickLogout={handleClickLogout}/>
+        <AiFillHome fontSize="25px" />
+        <AiOutlineHeart fontSize="25px" />
+        <AiOutlineSend fontSize="25px" />
+        <LogoutButton onClickLogout={handleClickLogout} />
       </RightSide>
     </Wrapper>
-  )
+  );
 }

@@ -1,11 +1,15 @@
-export function saveItem(key, value) {
+export function setLocalStorage(key, value) {
   localStorage.setItem(key, value);
 }
-  
-export function loadItem(key) {
-  return localStorage.getItem(key);
+
+export function getLocalStorage(key) {
+  const item = localStorage.getItem(key);
+
+  if (!item || item === undefined) return null;
+
+  return JSON.parse(item);
 }
 
-export function removeItem(key) {
+export function removeLocalStorage(key) {
   localStorage.removeItem(key);
 }
