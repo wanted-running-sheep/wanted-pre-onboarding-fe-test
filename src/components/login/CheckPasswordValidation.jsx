@@ -1,24 +1,16 @@
 import styled from '@emotion/styled';
 import { AiOutlineCheckCircle } from 'react-icons/ai';
 
-import {
-  ERROR_PASSWORD_LENGTH,
-  ERROR_UPPERCASE_TEXT,
-  ERROR_SPECIAL_TEXT,
-} from '../../constants';
+import { passwordErrorMsg } from '../../constants';
 
 export default function CheckPasswordValidation({ errorCodes }) {
   return (
     <ul>
-      <CheckItem check={errorCodes.includes(1)}>
-        <AiOutlineCheckCircle /> {passwordErrorCodes[ERROR_PASSWORD_LENGTH]}
-      </CheckItem>
-      <CheckItem check={errorCodes.includes(2)}>
-        <AiOutlineCheckCircle /> {passwordErrorCodes[ERROR_UPPERCASE_TEXT]}
-      </CheckItem>
-      <CheckItem check={errorCodes.includes(3)}>
-        <AiOutlineCheckCircle /> {passwordErrorCodes[ERROR_SPECIAL_TEXT]}
-      </CheckItem>
+      {passwordErrorMsg.map((message, index) => (
+        <CheckItem key={index} check={errorCodes.includes(index + 1)}>
+          <AiOutlineCheckCircle /> {message}
+        </CheckItem>
+      ))}
     </ul>
   );
 }
