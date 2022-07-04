@@ -28,7 +28,9 @@ function useLogin(validationType) {
     setErrorCodes(checkPasswordValidation(current.value));
   };
 
-  return {};
+  return {
+    type: validationType
+  };
 }
 
 export default useLogin;
