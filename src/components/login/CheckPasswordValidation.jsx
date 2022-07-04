@@ -12,33 +12,20 @@ const CheckItem = styled.li(
   (props) => ({
     color: props.check ? 'lightgray' : 'green',
   })
-)
+);
 
 export default function CheckPasswordValidation({ errorCodes }) {
-  const firstMessage = passwordErrorCodes[1];
-  const secondMessage = passwordErrorCodes[2];
-  const thirdMessage = passwordErrorCodes[3];
+  const codes = [1, 2, 3];
 
   return (
     <ul>
-      <CheckItem
-        check={errorCodes.includes(1) ? true : false}
-      >
-        <AiOutlineCheckCircle/>
-        {' '}{firstMessage}
-      </CheckItem>
-      <CheckItem
-        check={errorCodes.includes(2) ? true : false}
-      >
-        <AiOutlineCheckCircle/>
-        {' '}{secondMessage}
-      </CheckItem>
-      <CheckItem
-        check={errorCodes.includes(3) ? true : false}
-      >
-        <AiOutlineCheckCircle/>
-        {' '}{thirdMessage}
-      </CheckItem>
+      {codes.map((code, i) => {
+        return (
+          <CheckItem key={i} check={errorCodes.includes(code) ? true : false}>
+            <AiOutlineCheckCircle /> {passwordErrorCodes[code]}
+          </CheckItem>
+        );
+      })}
     </ul>
-  )
+  );
 }
