@@ -15,17 +15,20 @@ export function checkPasswordValidation(password) {
 
   // [1] 비밀번호 길이 8자리 이상
   if (password.length < 8) {
-    errorCodes.push(ERROR_PASSWORD_LENGTH);
+    //errorCodes.push(ERROR_PASSWORD_LENGTH);
+    errorCodes.push(1);
   }
 
   // [2] 대문자 포함 여부
   if (password.search(/[A-Z]/) < 0) {
-    errorCodes.push(ERROR_UPPERCASE_TEXT);
+    //errorCodes.push(ERROR_UPPERCASE_TEXT);
+    errorCodes.push(2);
   }
 
   // [3] 특수문자 포함 여부
   if (password.search(/[!@#$%^&*]/) < 0) {
-    errorCodes.push(ERROR_SPECIAL_TEXT);
+    //errorCodes.push(ERROR_SPECIAL_TEXT);
+    errorCodes.push(3);
   }
 
   return errorCodes;

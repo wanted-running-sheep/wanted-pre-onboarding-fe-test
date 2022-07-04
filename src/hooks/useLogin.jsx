@@ -1,4 +1,6 @@
-import React, { useRef } from 'react';
+import { useRef, useState, useContext, useEffect } from 'react';
+import LoginInputValueContext from '../context/LoginInputValueContext';
+import LoginValidateContext from '../context/LoginValidateContext';
 import {
   checkEmailValidation,
   checkPasswordValidation,
@@ -6,30 +8,87 @@ import {
 
 function useLogin(validationType) {
   const EMAIL = 'email';
+  const PASSWORD = 'password';
+
   const placeHolder =
     validationType === EMAIL
       ? '[테스트용] test@test.com'
       : '[테스트용] HelloWorld!';
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
-  const [emailValidation, setEmailValidation] = useState();
-  const [errorCodes, setErrorCodes] = useState();
-  const [disabled, setDisabled] = useState(true);
+  const inputRef = validationType === EMAIL ? emailRef : passwordRef;
+
+  const { validation, setValidation } = useContext(LoginValidateContext);
+  const { inputValue, setInputValue } = useContext(LoginInputValueContext);
+
+  const passwordValidate = (errorCodes) => {
+    return errorCodes ? errorCodes.length === 0 : errorCodes;
+  };
+
+  const checkValidateEmail = (value) => {
+    return validationType === EMAIL && checkEmailValidation(value);
+  };
 
   const onChangeInput = () => {
     const { current } = validationType === EMAIL ? emailRef : passwordRef;
     if (!current) return;
 
-    if (validationType === EMAIL) {
-      setEmailValidation(checkEmailValidation(current.value));
+    if (checkValidateEmail(current.value)) {
+      setValidation({
+        ...validation,
+        [validationType]: checkValidateEmail(current.value),
+      });
+      setInputValue({
+        ...inputValue,
+        [validationType]: current.value,
+      });
       return;
     }
 
-    setErrorCodes(checkPasswordValidation(current.value));
+    if (validationType === PASSWORD) {
+      setValidation({
+        ...validation,
+        errorCodes: checkPasswordValidation(current.value),
+      });
+
+      if (passwordValidate(checkPasswordValidation(current.value))) {
+        setValidation((prevValidateState) => {
+          return {
+            ...prevValidateState,
+            [validationType]: passwordValidate(
+              checkPasswordValidation(current.value)
+            ),
+          };
+        });
+        setInputValue({
+          ...inputValue,
+          [validationType]: current.value,
+        });
+        return;
+      }
+
+      if (
+        validation[validationType] &&
+        !passwordValidate(checkPasswordValidation(current.value))
+      ) {
+        setValidation({
+          ...validation,
+          [validationType]: false,
+          errorCodes: checkPasswordValidation(current.value),
+        });
+        return;
+      }
+    }
+
+    validation[validationType] &&
+      setValidation({ ...validation, [validationType]: false });
   };
 
   return {
-    type: validationType
+    inputRef,
+    onChangeInput,
+    placeHolder,
+    validation,
   };
 }
 

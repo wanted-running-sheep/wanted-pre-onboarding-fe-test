@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useContext } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import styled from '@emotion/styled';
 
 import {
@@ -8,31 +8,29 @@ import {
   ValidationCheckBox,
   CheckPasswordValidation,
 } from '../components/login';
-import {
-  checkEmailValidation,
-  checkPasswordValidation,
-} from '../services/validation';
 import { setLocalStorage } from '../services/storage';
 import { adminAccountInfo } from '../constants';
 
 import LoginCheckContext from '../context/LoginCheckContext';
+import LoginValidateContext from '../context/LoginValidateContext';
+import LoginInputValueContext from '../context/LoginInputValueContext';
 
 export default function LoginContainer() {
-  const emailRef = useRef(null);
-  const passwordRef = useRef(null);
-  const [emailValidation, setEmailValidation] = useState();
-  const [errorCodes, setErrorCodes] = useState();
-  const [disabled, setDisabled] = useState(true);
-  const [toastMessageVisible, setToastMessageVisible] = useState(false);
+  const {
+    validation: {
+      email: emailValidate,
+      password: passwordValidate,
+      errorCodes,
+    },
+  } = useContext(LoginValidateContext);
+
+  const {
+    inputValue: { email: emailValue, password: pwValue },
+  } = useContext(LoginInputValueContext);
+
   const { setIsSigned } = useContext(LoginCheckContext);
 
-  useEffect(() => {
-    if (emailValidation && errorCodes && errorCodes.length === 0) {
-      setDisabled(false);
-      return;
-    }
-    setDisabled(true);
-  }, [emailValidation, errorCodes]);
+  const [toastMessageVisible, setToastMessageVisible] = useState(false);
 
   useEffect(() => {
     setTimeout(function () {
@@ -40,23 +38,12 @@ export default function LoginContainer() {
     }, 2000);
   }, [toastMessageVisible]);
 
-  const handleChangeEmail = () => {
-    setEmailValidation(checkEmailValidation(emailRef.current.value));
-  };
-
-  const handleChangePassword = () => {
-    setErrorCodes(checkPasswordValidation(passwordRef.current.value));
-  };
-
   const handleSubmit = () => {
-    const email = emailRef.current.value;
-    const password = passwordRef.current.value;
-
     if (
-      emailValidation &&
-      errorCodes.length === 0 &&
-      email === adminAccountInfo.email &&
-      password === adminAccountInfo.password
+      emailValidate &&
+      passwordValidate &&
+      emailValue === adminAccountInfo.email &&
+      pwValue === adminAccountInfo.password
     ) {
       setLocalStorage('isSigned', true);
       setIsSigned(true);
@@ -66,45 +53,27 @@ export default function LoginContainer() {
     setToastMessageVisible(true);
   };
 
+  const isActiveBtn = () => {
+    return emailValidate && passwordValidate;
+  };
+
   return (
     <>
       <Wrapper>
         <LoginToastMessage visible={toastMessageVisible} />
-        <Inputform
-          validationType="email"
-          /* info={{
-            type: 'email',
-            id: 'email',
-            name: 'email',
-            ref: emailRef,
-          }}
-          onChange={handleChangeEmail}
-          placeholder="[테스트용] test@test.com" */
-        />
-        <ValidationCheckBox validation={emailValidation} />
+        <Inputform validationType="email" />
+        <ValidationCheckBox validation={emailValidate} />
       </Wrapper>
       <Wrapper>
-        <Inputform
-          validationType="password"
-          /* info={{
-            type: 'password',
-            id: 'password',
-            name: 'password',
-            ref: passwordRef,
-          }}
-          onChange={handleChangePassword}
-          placeholder="[테스트용] HelloWorld!" */
-        />
-        <ValidationCheckBox
-          validation={errorCodes ? errorCodes.length === 0 : errorCodes}
-        />
+        <Inputform validationType="password" />
+        <ValidationCheckBox validation={passwordValidate} />
       </Wrapper>
       <Wrapper>
         <CheckPasswordValidation
           errorCodes={errorCodes ? errorCodes : [1, 2, 3]}
         />
       </Wrapper>
-      <LoginButton disabled={disabled} onSubmit={handleSubmit} />
+      <LoginButton disabled={!isActiveBtn()} onSubmit={handleSubmit} />
     </>
   );
 }

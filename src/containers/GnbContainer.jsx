@@ -12,6 +12,8 @@ import LoginCheckContext from '../context/LoginCheckContext';
 import { AiFillHome, AiOutlineHeart, AiOutlineSend } from 'react-icons/ai';
 
 import { removeLocalStorage } from '../services/storage';
+import LoginValidateContext from '../context/LoginValidateContext';
+import { RiMailUnreadFill } from 'react-icons/ri';
 
 const Wrapper = styled.div({
   zIndex: '100',
@@ -36,10 +38,15 @@ const RightSide = styled.div({
 
 export default function GnbContainer() {
   const { setIsSigned } = useContext(LoginCheckContext);
-
+  const { setValidation } = useContext(LoginValidateContext);
   const handleClickLogout = () => {
     removeLocalStorage('isSigned');
     setIsSigned(false);
+    setValidation({
+      email: undefined,
+      password: undefined,
+      errorCodes: undefined,
+    });
   };
 
   return (

@@ -4,7 +4,7 @@ import { getLocalStorage } from '../services/storage';
 
 const LoginCheckContext = createContext();
 
-export const LoginCheckContextProvider = ({ children }) => {
+export function LoginCheckContextProvider({ children }) {
   const [isSigned, setIsSigned] = useState(getLocalStorage('isSigned'));
 
   return (
@@ -12,6 +12,5 @@ export const LoginCheckContextProvider = ({ children }) => {
       {children}
     </LoginCheckContext.Provider>
   );
-};
-
+}
 export default LoginCheckContext;

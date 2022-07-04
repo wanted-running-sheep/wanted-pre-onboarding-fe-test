@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
-import useLogin from '../hooks/useLogin';
+import useLogin from '../../hooks/useLogin';
+import ValidationCheckBox from './ValidationCheckBox';
 
 const InputFormBox = styled.div({
   width: '100%',
@@ -16,15 +17,14 @@ const InputField = styled.input({
 });
 
 export default function Inputform({ validationType }) {
-  /* const { type, id, name, ref } = info; */
-  const { type, id, name, inputRef, onChangeInput } = useLogin(validationType);
+  const { inputRef, onChangeInput, placeHolder } = useLogin(validationType);
 
   return (
     <InputFormBox>
       <InputField
-        type={type}
-        id={id}
-        name={name}
+        type={validationType}
+        id={validationType}
+        name={validationType}
         ref={inputRef}
         autocomplete="off"
         onChange={onChangeInput}
