@@ -1,0 +1,51 @@
+[
+    {
+        "id": 1,
+        "username": "user_02",
+        "img": "https://source.unsplash.com/random/600x300",
+        "thumbs_up": 3,
+        "comments": [
+            {
+                "id": 1,
+                "name": "user_01",
+                "comment": "hello!"
+            },
+            {
+                "id": 2,
+                "name": "user_02",
+                "comment": "nice picture!"
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "username": "user_01",
+        "img": "https://source.unsplash.com/random/500x500",
+        "thumbs_up": 7,
+        "comments": [
+            {
+                "id": 1,
+                "name": "user_01",
+                "comment": "Hi~"
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "username": "user_03",
+        "img": "https://source.unsplash.com/random/400x600",
+        "thumbs_up": 10,
+        "comments": [
+            {
+                "id": 1,
+                "name": "user_01",
+                "comment": "Nice!"
+            },
+            {
+                "id": 2,
+                "name": "user_02",
+                "comment": "Hello :)"
+            }
+        ]
+    }
+]
