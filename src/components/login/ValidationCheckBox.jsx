@@ -1,40 +1,17 @@
-import { AiOutlineCheckCircle, AiOutlineExclamationCircle } from 'react-icons/ai';
+import { AiOutlineCheckCircle } from 'react-icons/ai';
 
 export default function ValidationCheckBox({ validation }) {
-  if (validation === undefined) {
-    return (
-      <AiOutlineCheckCircle 
-        style={{
-          height: '100%',
-          width: '24px',
-          marginLeft: '5px',
-          color: 'lightgray',
-        }}
-      />
-    )
-  }
-
-  if (validation === true) {
-    return (
-      <AiOutlineCheckCircle
-        style={{
-          height: '100%',
-          width: '24px',
-          marginLeft: '5px',
-          color: 'green',
-        }}
-      />
-    )
-  }
+  const changeColor =
+    validation === undefined ? 'lightgray' : validation ? 'green' : '#EA6666';
 
   return (
-    <AiOutlineExclamationCircle
+    <AiOutlineCheckCircle
       style={{
         height: '100%',
         width: '24px',
         marginLeft: '5px',
-        color: '#EA6666',
+        color: changeColor,
       }}
     />
-  )
+  );
 }

@@ -1,23 +1,24 @@
-import logo from '../../image/Logo.svg';
+import logo from '../../assets/images/Logo.svg';
 
 import { Link } from 'react-router-dom';
 
 export default function Logo({ size }) {
   return (
-    <Link 
+    <Link
       to="/"
       style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-      }}>
-      <img 
-        src={logo} 
+      }}
+    >
+      <img
+        src={logo}
         alt="instagram"
         style={{
           width: size,
         }}
       />
     </Link>
-  )
+  );
 }

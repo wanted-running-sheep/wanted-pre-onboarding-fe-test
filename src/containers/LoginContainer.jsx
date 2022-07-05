@@ -1,113 +1,85 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
+import styled from '@emotion/styled';
 
-import styled from 'styled-components';
+import {
+  Inputform,
+  LoginButton,
+  LoginToastMessage,
+  ValidationCheckBox,
+  CheckPasswordValidation,
+} from '../components/login';
+import { setLocalStorage } from '../services/storage';
+import { adminAccountInfo } from '../constants';
 
-import Inputform from '../components/login/InputForm';
-import LoginButton from '../components/login/LoginButton';
-import LoginToastMessage from '../components/login/LoginToastMessage';
-import ValidationCheckBox from '../components/login/ValidationCheckBox';
-import CheckPasswordValidation from '../components/login/CheckPasswordValidation';
+import LoginCheckContext from '../context/LoginCheckContext';
+import LoginValidateContext from '../context/LoginValidateContext';
+import LoginInputValueContext from '../context/LoginInputValueContext';
 
-import { checkEmailValidation, checkPasswordValidation } from '../services/validation'; 
-import { saveItem } from '../services/storage';
-import { Admin } from '../fixtures/admin';
+export default function LoginContainer() {
+  const {
+    validation: {
+      email: emailValidate,
+      password: passwordValidate,
+      errorCodes,
+    },
+  } = useContext(LoginValidateContext);
 
-const Wrapper = styled.div({
-  display: 'flex',
-  width: '100%',
-  verticalAlign: 'center'
-});
+  const {
+    inputValue: { email: emailValue, password: pwValue },
+  } = useContext(LoginInputValueContext);
 
-export default function LoginContainer({ setEmail }) {
-  const emailRef = useRef(null);
-  const passwordRef = useRef(null);
-  const [emailValidation, setEmailValidation] = useState();
-  const [errorCodes, setErrorCodes] = useState();
-  const [disabled, setDisabled] = useState(true);
+  const { setIsSigned } = useContext(LoginCheckContext);
+
   const [toastMessageVisible, setToastMessageVisible] = useState(false);
-  
-  useEffect(() => {
-    if (emailValidation && errorCodes && errorCodes.length === 0) {
-      setDisabled(false);
-      return;
-    }
-    setDisabled(true);
-  }, [emailValidation, errorCodes]);
 
   useEffect(() => {
-    setTimeout(function() {
+    setTimeout(function () {
       setToastMessageVisible(false);
     }, 2000);
   }, [toastMessageVisible]);
 
-  const handleChangeEmail = () => {
-    setEmailValidation(checkEmailValidation(emailRef.current.value));
-  }
-
-  const handleChangePassword = () => {
-    setErrorCodes(checkPasswordValidation(passwordRef.current.value));
-  }
-    
   const handleSubmit = () => {
-    const email = emailRef.current.value;
-    const password = passwordRef.current.value;
-
-    if (emailValidation && errorCodes.length === 0) {
-      /* 이메일 정보가 Admin과 일치하는지 확인 */
-      if (email === Admin.email && password === Admin.password) {
-        setEmail(email);
-        saveItem('email', email);
-        saveItem('password', password);
-      } else {
-        setToastMessageVisible(true);
-      }
+    if (
+      emailValidate &&
+      passwordValidate &&
+      emailValue === adminAccountInfo.email &&
+      pwValue === adminAccountInfo.password
+    ) {
+      setLocalStorage('isSigned', true);
+      setIsSigned(true);
+      return;
     }
+
+    setToastMessageVisible(true);
+  };
+
+  const isActiveBtn = () => {
+    return emailValidate && passwordValidate;
   };
 
   return (
     <>
       <Wrapper>
-        <LoginToastMessage
-          visible={toastMessageVisible}
-        />
-        <Inputform
-          info={{
-            type: 'email',
-            id: 'email',
-            name: 'email',
-            ref: emailRef
-          }}
-          onChange={handleChangeEmail}
-          placeholder="[테스트용] test@test.com"
-        />
-        <ValidationCheckBox
-          validation={emailValidation}
-        />
+        <LoginToastMessage visible={toastMessageVisible} />
+        <Inputform validationType="email" />
+        <ValidationCheckBox validation={emailValidate} />
       </Wrapper>
       <Wrapper>
-        <Inputform
-          info={{
-            type: 'password',
-            id: 'password',
-            name: 'password',
-            ref: passwordRef
-          }}
-          onChange={handleChangePassword}
-          placeholder="[테스트용] HelloWorld!"
-        />
-        <ValidationCheckBox
-          validation={errorCodes ? errorCodes.length === 0 : errorCodes}
-        />
+        <Inputform validationType="password" />
+        <ValidationCheckBox validation={passwordValidate} />
       </Wrapper>
       <Wrapper>
         <CheckPasswordValidation
           errorCodes={errorCodes ? errorCodes : [1, 2, 3]}
         />
       </Wrapper>
-      <LoginButton
-        disabled={disabled}
-        onSubmit={handleSubmit}
-      />
+      <LoginButton disabled={!isActiveBtn()} onSubmit={handleSubmit} />
     </>
-  )
+  );
 }
+
+const Wrapper = styled.div`
+  display: flex;
+  width: 100%;
+  vertical-align: center;
+`;
